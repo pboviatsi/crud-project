@@ -42,6 +42,7 @@ const tableIcons = {
 export default function Product(props) {
 
     const [rows, setRows] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios(
@@ -52,11 +53,53 @@ export default function Product(props) {
 
         fetchData();
     }, []);
+
+    function getProduct(){
+        axios.get(`http://localhost:3000/products/`,rows)
+            .then((result)=>{
+                setRows(result.data);
+                console.log("Εμφάνιση όλων των προϊόντων");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+    }
+
+    function deleteProduct(productId){
+        axios.delete(`http://localhost:3000/products/${productId}`,rows)
+            .then((result)=>{
+                console.log("Έγινε διαγραφή ενός προϊόν");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+    }
+
+    function updateProduct(newData){
+        axios.put(`http://localhost:3000/products/${newData.product_id}`,newData)
+                .then((result)=>{
+                    console.log("Ενημερώθηκε ένα προϊόν");
+                })
+                .catch((error)=>{
+                    alert(error);
+                });
+        }
+
+    function addProduct(newData){
+        axios.post(`http://localhost:3000/products`,newData)
+            .then((result)=>{
+                console.log("Προστέθηκε ένα προϊόν");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+    }
+
     const [columns, setColumns] = useState([
         {   title: 'Κωδικός',
             field: 'product_id',
+            editable: 'never',
             headerStyle: {
-                backgroundColor: '#d3dfe5',
                 textAlign: "center"
             }
         },
@@ -67,29 +110,35 @@ export default function Product(props) {
                 textAlign: "left"
             },
             headerStyle: {
-                backgroundColor: '#d3dfe5',
+                textAlign: "center"
+            }
+        },
+        {
+            title: 'Περιγραφή',
+            field: 'descr',
+            hidden: true,
+            cellStyle: {
+                textAlign: "left"
+            },
+            headerStyle: {
                 textAlign: "center"
             }
         },
         {   title: 'Τιμή',
             field: 'price',
-            type: 'numeric',
             cellStyle: {
                 textAlign: "center"
             },
             headerStyle: {
-                backgroundColor: '#d3dfe5',
                 textAlign: "center"
             }
         },
         {   title: 'Διαθεσιμότητα',
             field: 'availability_count',
-            type: 'numeric',
             cellStyle: {
                 textAlign: "center"
             },
             headerStyle: {
-                backgroundColor: '#d3dfe5',
                 textAlign: "center"
             }
         },
@@ -99,7 +148,6 @@ export default function Product(props) {
                 textAlign: "left"
             },
             headerStyle: {
-                backgroundColor: '#d3dfe5',
                 textAlign: "center"
             }
         },
@@ -111,34 +159,36 @@ export default function Product(props) {
             title="Διαχείριση προϊόντων"
             columns={columns}
             data={rows}
+            options={{
+                rowStyle: {
+                    backgroundColor: '#f0fcff',
+                }
+            }}
             editable={{
                 onRowAdd: newData =>
                     new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            setRows([...rows, newData]);
+                        addProduct(newData);
 
+                        setTimeout(() => {
+                            getProduct();
                             resolve();
                         }, 1000)
                     }),
                 onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            const dataUpdate = [...rows];
-                            const index = oldData.tableData.id;
-                            dataUpdate[index] = newData;
-                            setRows([...dataUpdate]);
+                        updateProduct(newData);
 
+                        setTimeout(() => {
+                            getProduct();
                             resolve();
                         }, 1000)
                     }),
                 onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            const dataDelete = [...rows];
-                            const index = oldData.tableData.id;
-                            dataDelete.splice(index, 1);
-                            setRows([...dataDelete]);
+                        deleteProduct(rows[oldData.tableData.id].product_id);
 
+                        setTimeout(() => {
+                            getProduct();
                             resolve()
                         }, 1000)
                     }),
@@ -152,7 +202,7 @@ export default function Product(props) {
                                 style={{
                                     fontSize: 15,
                                     textAlign: 'left',
-                                    backgroundColor: '#dee2ff',
+                                    backgroundColor: '#eef6ff',
                                     padding: '40px',
                                 }}
                             >
