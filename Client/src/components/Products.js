@@ -18,6 +18,10 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+import NewProduct from "./NewProduct";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -36,12 +40,31 @@ const tableIcons = {
     Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
-export default function Product(props) {
+const useStyles = makeStyles((theme) => ({
+    button: {
+        background: 'linear-gradient(2deg, #2196f338 30%, #21cbf370 90%)',
+        boxShadow: '0 3px 5px 2px rgb(33 203 243 / 19%)',
+        borderRadius: 100,
+        height: 48,
+        width: '100%',
+        display: 'flex',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        marginTop: theme.spacing(6),
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
 
+}));
+
+export default function Product(props) {
+    const classes = useStyles();
     const [rows, setRows] = useState([]);
+    //άνοιγμα pop-up φόρμας νέου πρϊόντος
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,6 +77,12 @@ export default function Product(props) {
         fetchData();
     }, []);
 
+    //άνοιγμα pop-up φόρμας νέου πρϊόντος
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    //εμφάνιση όλων των προϊόντων
     function getProduct(){
         axios.get(`http://localhost:3000/products/`,rows)
             .then((result)=>{
@@ -65,6 +94,7 @@ export default function Product(props) {
             });
     }
 
+    //διαγραφή προϊόντος με συγκεκριμένο id
     function deleteProduct(productId){
         axios.delete(`http://localhost:3000/products/${productId}`,rows)
             .then((result)=>{
@@ -75,6 +105,7 @@ export default function Product(props) {
             });
     }
 
+    //ενημέρωση προϊόντος
     function updateProduct(newData){
         axios.put(`http://localhost:3000/products/${newData.product_id}`,newData)
                 .then((result)=>{
@@ -84,16 +115,6 @@ export default function Product(props) {
                     alert(error);
                 });
         }
-
-    function addProduct(newData){
-        axios.post(`http://localhost:3000/products`,newData)
-            .then((result)=>{
-                console.log("Προστέθηκε ένα προϊόν");
-            })
-            .catch((error)=>{
-                alert(error);
-            });
-    }
 
     const [columns, setColumns] = useState([
         {   title: 'Κωδικός',
@@ -116,7 +137,7 @@ export default function Product(props) {
         {
             title: 'Περιγραφή',
             field: 'descr',
-            hidden: true,
+            hidden: 'true',
             cellStyle: {
                 textAlign: "left"
             },
@@ -154,6 +175,7 @@ export default function Product(props) {
     ]);
 
     return (
+    <React.Fragment>
         <MaterialTable
             icons={tableIcons}
             title="Διαχείριση προϊόντων"
@@ -165,15 +187,6 @@ export default function Product(props) {
                 }
             }}
             editable={{
-                onRowAdd: newData =>
-                    new Promise((resolve, reject) => {
-                        addProduct(newData);
-
-                        setTimeout(() => {
-                            getProduct();
-                            resolve();
-                        }, 1000)
-                    }),
                 onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
                         updateProduct(newData);
@@ -213,5 +226,12 @@ export default function Product(props) {
                 },
             ]}
         />
+
+        <Button className={classes.button} onClick={handleOpen}>
+            Προσθήκη νέου προϊόντος
+        </Button>
+        <NewProduct open={open} setOpen={setOpen}/>
+    </React.Fragment>
+
     )
 }
