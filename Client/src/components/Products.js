@@ -20,6 +20,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import NewProduct from "./NewProduct";
 
@@ -64,7 +65,10 @@ export default function Product(props) {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
     //άνοιγμα pop-up φόρμας νέου πρϊόντος
+    const [openModal, setOpenModal] = React.useState(false);
     const [open, setOpen] = React.useState(false);
+    const [SnackbarMessage, setSnackbarMessage] = useState();
+    const [transition, setTransition] = React.useState(undefined);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,7 +83,12 @@ export default function Product(props) {
 
     //άνοιγμα pop-up φόρμας νέου πρϊόντος
     const handleOpen = () => {
-        setOpen(true);
+        setOpenModal(true);
+    };
+
+    // κλείσιμο pop-up φόρμας νέου πρϊόντος
+    const handleClose = () => {
+        setOpenModal(false);
     };
 
     //εμφάνιση όλων των προϊόντων
@@ -98,7 +107,8 @@ export default function Product(props) {
     function deleteProduct(productId){
         axios.delete(`http://localhost:3000/products/${productId}`,rows)
             .then((result)=>{
-                console.log("Έγινε διαγραφή ενός προϊόν");
+                snackBarOpen();
+                setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
             })
             .catch((error)=>{
                 alert(error);
@@ -109,12 +119,23 @@ export default function Product(props) {
     function updateProduct(newData){
         axios.put(`http://localhost:3000/products/${newData.product_id}`,newData)
                 .then((result)=>{
-                    console.log("Ενημερώθηκε ένα προϊόν");
+                    snackBarOpen();
+                    setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
                 })
                 .catch((error)=>{
                     alert(error);
                 });
-        }
+    }
+
+    //άνοιγμα pop-up φόρμας νέου πρϊόντος
+    const snackBarOpen = () => {
+        setOpen(true);
+    };
+
+    // κλείσιμο pop-up φόρμας νέου πρϊόντος
+    const snackBarClose = () => {
+        setOpen(false);
+    };
 
     const [columns, setColumns] = useState([
         {   title: 'Κωδικός',
@@ -189,18 +210,16 @@ export default function Product(props) {
             editable={{
                 onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
-                        updateProduct(newData);
-
                         setTimeout(() => {
+                            updateProduct(newData);
                             getProduct();
                             resolve();
                         }, 1000)
                     }),
                 onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
-                        deleteProduct(rows[oldData.tableData.id].product_id);
-
                         setTimeout(() => {
+                            deleteProduct(rows[oldData.tableData.id].product_id);
                             getProduct();
                             resolve()
                         }, 1000)
@@ -230,7 +249,14 @@ export default function Product(props) {
         <Button className={classes.button} onClick={handleOpen}>
             Προσθήκη νέου προϊόντος
         </Button>
-        <NewProduct open={open} setOpen={setOpen}/>
+        <NewProduct open={openModal} setOpen={setOpenModal}/>
+        <Snackbar
+            open={open}
+            onClose={handleClose}
+            TransitionComponent={transition}
+            message={SnackbarMessage}
+            key={transition ? transition.name : ''}
+        />
     </React.Fragment>
 
     )
