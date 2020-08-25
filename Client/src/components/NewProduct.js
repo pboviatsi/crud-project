@@ -1,9 +1,8 @@
 import 'date-fns';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import axios from "axios";
 
-import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
-import { makeStyles } from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -18,8 +17,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
-
-import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,11 +37,11 @@ function getSteps() {
 export default function Products(props) {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
     //παίρνω την εντολή ανοίγματος παραθύρου απο το Products.js
-    const {open, setOpen} =props;
+    const {open, setOpen} = props;
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
+    const {getAllProduct, product} = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -62,43 +59,29 @@ export default function Products(props) {
         setOpen(false);
     };
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-    };
-
     function handleChange(e) {
         const { name, value } = e.target;
         setRows({ ...rows, [name]: value });
     }
 
+    //προσθήκη νέου προϊόντος
     function addProduct(){
-        axios.post(`http://localhost:3000/products`,rows)
+        axios.post(`/products`,rows)
             .then((result)=>{
-                setActiveStep((prevActiveStep) => prevActiveStep + 1);
                 setOpen(false);
-                console.log("Προστέθηκε ένα προϊόν");
+                handleReset();
+                getAllProduct();
             })
             .catch((error)=>{
                 alert(error);
             });
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                'http://localhost:3000/products',
-            );
-            setRows(result.data);
-        };
-
-        fetchData();
-    }, []);
-
-    //πεδία ανάλογα το step
+    //πεδία εισαγωγής ανάλογα το step
     function getStepContent(stepIndex) {
         switch (stepIndex) {
             case 0:
-                return (  <form className={classes.formStep}>
+                return ( <form className={classes.formStep}>
                             <div>
                                 <TextField
                                             name="name_product"
@@ -123,7 +106,8 @@ export default function Products(props) {
                                             onChange={handleChange}
                                 />
                             </div>
-                        </form>);
+                        </form>
+                );
             case 1:
                 return ( <form>
                             <FormControl fullWidth className= {classes.formStep} variant="outlined">
@@ -172,45 +156,43 @@ export default function Products(props) {
     }
 
     return (
-        <>
-            <Dialog open={open} onClose={handleClose} >
-                <DialogTitle id="form-dialog-title">Νέο προϊόν</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Συμπληρώσε τα στοιχεία του νέου προϊόντος
-                    </DialogContentText>
-                    <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+        <Dialog open={open} onClose={handleClose} >
+            <DialogTitle id="form-dialog-title">Νέο προϊόν</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Συμπληρώσε τα στοιχεία του νέου προϊόντος
+                </DialogContentText>
+                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
 
-                    <div className={classes.root}>
-                        <Stepper activeStep={activeStep} alternativeLabel>
-                            {steps.map((label) => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
+                <div className={classes.root}>
+                    <Stepper activeStep={activeStep} alternativeLabel>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                    <div>
                         <div>
-                             <div>
-                                    <div>
-                                        <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
-                                            Πίσω
-                                        </Button>
-                                        {activeStep === steps.length - 1 ? (
-                                                <Button variant="contained" color="primary" onClick={addProduct}>
-                                                    Ολοκλήρωση
-                                                </Button>
-                                            ) : (
-                                                <Button variant="contained" color="primary" onClick={handleNext}>
-                                                    Επόμενο
-                                                </Button>
-                                            )
-                                        }
-                                    </div>
-                             </div>
+                            <div>
+                                <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
+                                    Πίσω
+                                </Button>
+                                {activeStep === steps.length - 1 ? (
+                                    <Button variant="contained" color="primary" onClick={addProduct}>
+                                        Ολοκλήρωση
+                                    </Button>
+                                ) : (
+                                    <Button variant="contained" color="primary" onClick={handleNext}>
+                                        Επόμενο
+                                    </Button>
+                                )
+                                }
+                            </div>
                         </div>
                     </div>
-                </DialogContent>
-            </Dialog>
-        </>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

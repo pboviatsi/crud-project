@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import MaterialTable from 'material-table'
 import axios from "axios";
-import { forwardRef } from 'react';
+import {forwardRef} from 'react';
+import {Link} from "react-router-dom";
 
-import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -19,13 +19,13 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
-
+import AddIcon from '@material-ui/icons/Add';
 import NewProduct from "./NewProduct";
 
 const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -58,28 +58,16 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-
 }));
 
 export default function Product(props) {
     const classes = useStyles();
-    const [rows, setRows] = useState([]);
-    //άνοιγμα pop-up φόρμας νέου πρϊόντος
     const [openModal, setOpenModal] = React.useState(false);
     const [open, setOpen] = React.useState(false);
-    const [SnackbarMessage, setSnackbarMessage] = useState();
+    const [snackbarMessage, setSnackbarMessage] = useState();
     const [transition, setTransition] = React.useState(undefined);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                'http://localhost:3000/products',
-            );
-            setRows(result.data);
-        };
-
-        fetchData();
-    }, []);
+    //παίρνω όλα τα προϊόντα απο το App.js
+    const {getAllProduct, product} = props;
 
     //άνοιγμα pop-up φόρμας νέου πρϊόντος
     const handleOpen = () => {
@@ -91,21 +79,9 @@ export default function Product(props) {
         setOpenModal(false);
     };
 
-    //εμφάνιση όλων των προϊόντων
-    function getProduct(){
-        axios.get(`http://localhost:3000/products/`,rows)
-            .then((result)=>{
-                setRows(result.data);
-                console.log("Εμφάνιση όλων των προϊόντων");
-            })
-            .catch((error)=>{
-                alert(error);
-            });
-    }
-
     //διαγραφή προϊόντος με συγκεκριμένο id
     function deleteProduct(productId){
-        axios.delete(`http://localhost:3000/products/${productId}`,rows)
+        axios.delete(`/products/${productId}`)
             .then((result)=>{
                 snackBarOpen();
                 setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
@@ -117,7 +93,7 @@ export default function Product(props) {
 
     //ενημέρωση προϊόντος
     function updateProduct(newData){
-        axios.put(`http://localhost:3000/products/${newData.product_id}`,newData)
+        axios.put(`/products/${newData.product_id}`,newData)
                 .then((result)=>{
                     snackBarOpen();
                     setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
@@ -127,12 +103,12 @@ export default function Product(props) {
                 });
     }
 
-    //άνοιγμα pop-up φόρμας νέου πρϊόντος
+    //άνοιγμα snackBar
     const snackBarOpen = () => {
         setOpen(true);
     };
 
-    // κλείσιμο pop-up φόρμας νέου πρϊόντος
+    // κλείσιμο snackBar
     const snackBarClose = () => {
         setOpen(false);
     };
@@ -168,6 +144,7 @@ export default function Product(props) {
         },
         {   title: 'Τιμή',
             field: 'price',
+            type: 'numeric',
             cellStyle: {
                 textAlign: "center"
             },
@@ -177,6 +154,7 @@ export default function Product(props) {
         },
         {   title: 'Διαθεσιμότητα',
             field: 'availability_count',
+            type: 'numeric',
             cellStyle: {
                 textAlign: "center"
             },
@@ -196,68 +174,76 @@ export default function Product(props) {
     ]);
 
     return (
-    <React.Fragment>
-        <MaterialTable
-            icons={tableIcons}
-            title="Διαχείριση προϊόντων"
-            columns={columns}
-            data={rows}
-            options={{
-                rowStyle: {
-                    backgroundColor: '#f0fcff',
-                }
-            }}
-            editable={{
-                onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            updateProduct(newData);
-                            getProduct();
-                            resolve();
-                        }, 1000)
-                    }),
-                onRowDelete: oldData =>
-                    new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            deleteProduct(rows[oldData.tableData.id].product_id);
-                            getProduct();
-                            resolve()
-                        }, 1000)
-                    }),
-            }}
-            detailPanel={[
-                {
-                    tooltip: 'Δείτε περισσότερα',
-                    render: rowData => {
-                        return (
-                            <div
-                                style={{
-                                    fontSize: 15,
-                                    textAlign: 'left',
-                                    backgroundColor: '#eef6ff',
-                                    padding: '40px',
-                                }}
-                            >
-                                <b> Περιγραφή προϊόντος:</b> {rowData.descr}
-                            </div>
-                        )
+        <React.Fragment>
+            <MaterialTable
+                icons={tableIcons}
+                title="Διαχείριση προϊόντων"
+                actions={[
+                    {
+                        icon: AddIcon,
+                        tooltip: 'Προσθήκη πρϊόντος',
+                        isFreeAction: true,
+                        onClick: (event) => handleOpen()
+                    }
+                ]}
+                columns={columns}
+                data={product}
+                options={{
+                    rowStyle: {
+                        backgroundColor: '#f0fcff',
                     },
-                },
-            ]}
-        />
-
-        <Button className={classes.button} onClick={handleOpen}>
-            Προσθήκη νέου προϊόντος
-        </Button>
-        <NewProduct open={openModal} setOpen={setOpenModal}/>
-        <Snackbar
-            open={open}
-            onClose={handleClose}
-            TransitionComponent={transition}
-            message={SnackbarMessage}
-            key={transition ? transition.name : ''}
-        />
-    </React.Fragment>
-
+                    actionsColumnIndex: -1
+                }}
+                editable={{
+                    onRowUpdate: (newData, oldData) =>
+                        new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                updateProduct(newData);
+                                getAllProduct();
+                                resolve();
+                            }, 1000)
+                        }),
+                    onRowDelete: oldData =>
+                        new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                deleteProduct(product[oldData.tableData.id].product_id);
+                                getAllProduct();
+                                resolve();
+                            }, 1000)
+                        }),
+                }}
+                detailPanel={[
+                    {
+                        tooltip: 'Δείτε περισσότερα',
+                        render: rowData => {
+                            return (
+                                <div
+                                    style={{
+                                        fontSize: 15,
+                                        textAlign: 'left',
+                                        backgroundColor: '#eef6ff',
+                                        padding: '40px',
+                                    }}
+                                >
+                                    <b> Περιγραφή προϊόντος:</b> {rowData.descr}
+                                </div>
+                            )
+                        },
+                    },
+                ]}
+            />
+            <Button className={classes.button} component={Link} to="/newProduct">
+                Προσθήκη νέου προϊόντος
+            </Button>
+            <NewProduct open={openModal} setOpen={setOpenModal} getAllProduct={getAllProduct} product={product}/>
+            <Snackbar
+                open={open}
+                autoHideDuration={3000}
+                onClose={snackBarClose}
+                TransitionComponent={transition}
+                message={snackbarMessage}
+                key={transition ? transition.name : ''}
+            />
+        </React.Fragment>
     )
 }
