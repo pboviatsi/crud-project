@@ -117,7 +117,7 @@ export default function NewProduct(props) {
                     />
 
                     <Button className={classes.button} onClick={addProduct}>
-                        Προσθήκη νέου προϊόντος
+                        Προσθηκη νεου προϊοντος
                     </Button>
                 </Box>
             </Box>

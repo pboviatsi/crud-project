@@ -271,7 +271,7 @@ export default function Product(props) {
                 ]}
             />
             <Button className={classes.button} component={Link} to="/newProduct">
-                Προσθήκη νέου προϊόντος
+                Προσθηκη νεου προϊοντος σε νεα σελιδα
             </Button>
             <NewProduct open={openModal} setOpen={setOpenModal} getAllProduct={getAllProduct} product={product}/>
             <Snackbar

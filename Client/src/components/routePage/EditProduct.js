@@ -128,7 +128,7 @@ function EditProduct(props) {
                     />
 
                     <Button className={classes.button} onClick={(e) => updateProduct(rows)}>
-                        Ενημέρωση προϊόντος
+                        Ενημερωση προϊοντος
                     </Button>
                 </Box>
             </Box>

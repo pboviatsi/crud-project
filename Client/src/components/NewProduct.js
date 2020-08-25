@@ -176,15 +176,15 @@ export default function Products(props) {
                         <div>
                             <div>
                                 <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
-                                    Πίσω
+                                    Προηγουμενο
                                 </Button>
                                 {activeStep === steps.length - 1 ? (
                                     <Button variant="contained" color="primary" onClick={addProduct}>
-                                        Ολοκλήρωση
+                                        Ολοκληρωση
                                     </Button>
                                 ) : (
                                     <Button variant="contained" color="primary" onClick={handleNext}>
-                                        Επόμενο
+                                        Επομενο
                                     </Button>
                                 )
                                 }
