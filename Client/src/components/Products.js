@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import MaterialTable from 'material-table'
 import axios from "axios";
 import {forwardRef} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -23,6 +23,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import AddIcon from '@material-ui/icons/Add';
 import NewProduct from "./NewProduct";
+import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref} />),
@@ -42,6 +43,7 @@ const tableIcons = {
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
+    EditInNewPage: forwardRef((props, ref) => <ListAltOutlinedIcon {...props} ref={ref} />),
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -68,15 +70,11 @@ export default function Product(props) {
     const [transition, setTransition] = React.useState(undefined);
     //παίρνω όλα τα προϊόντα απο το App.js
     const {getAllProduct, product} = props;
+    const history = useHistory();
 
     //άνοιγμα pop-up φόρμας νέου πρϊόντος
     const handleOpen = () => {
         setOpenModal(true);
-    };
-
-    // κλείσιμο pop-up φόρμας νέου πρϊόντος
-    const handleClose = () => {
-        setOpenModal(false);
     };
 
     //διαγραφή προϊόντος με συγκεκριμένο id
@@ -173,6 +171,10 @@ export default function Product(props) {
         },
     ]);
 
+     function updateInNewPage(product_id) {
+         history.push("/editProduct/"+product_id);
+     }
+
     return (
         <React.Fragment>
             <MaterialTable
@@ -184,10 +186,46 @@ export default function Product(props) {
                         tooltip: 'Προσθήκη πρϊόντος',
                         isFreeAction: true,
                         onClick: (event) => handleOpen()
-                    }
-                ]}
+                    },
+                    {
+                        icon: tableIcons.EditInNewPage,
+                        tooltip: 'Επεξεργασία πρϊόντος σε νέα σελίδα',
+                        isFreeAction: false,
+                        onClick: (event, rowData) =>  updateInNewPage(rowData.product_id)
+                    }]}
                 columns={columns}
                 data={product}
+                localization={{
+                    body: {
+                        deleteTooltip: 'Διαγραφή',
+                        editTooltip: 'Επεξεργασία',
+                        editRow: {
+                            deleteText: 'Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν την εγγραφή;',
+                            cancelTooltip: 'Ακύρωση',
+                            saveTooltip: 'Αποθήκευση'
+                        }
+                    },
+                    header: {
+                        actions: 'Ενέργειες'
+                    },
+                    pagination: {
+                        labelDisplayedRows: '{from} - {to} από τις {count}',
+                        labelRowsSelect: 'γραμμές',
+                        labelRowsPerPage: 'γραμμές ανά σελίδα:',
+                        firstAriaLabel: 'Πρώτη σελίδα',
+                        firstTooltip: 'Πρώτη σελίδα',
+                        previousAriaLabel: 'Προηγούμενη σελίδα',
+                        previousTooltip: 'Προηγούμενη σελίδα',
+                        nextAriaLabel: 'Επόμενη σελίδα',
+                        nextTooltip: 'Επόμενη σελίδα',
+                        lastAriaLabel: 'Τελευταία σελίδα',
+                        lastTooltip: 'Τελευταία σελίδα'
+                    },
+                    toolbar: {
+                        searchTooltip: 'Αναζήτηση',
+                        searchPlaceholder: 'Αναζήτηση'
+                    },
+                }}
                 options={{
                     rowStyle: {
                         backgroundColor: '#f0fcff',
