@@ -30,7 +30,6 @@ export default function NewProduct(props) {
     const [open, setOpen] = React.useState(false);
     const [transition, setTransition] = React.useState(undefined);
     const [snackbarMessage, setSnackbarMessage] = useState();
-    const {getAllProduct, product} = props;
     const history = useHistory();
 
     function handleChange(e) {
@@ -58,7 +57,6 @@ export default function NewProduct(props) {
     // κλείσιμο snackBar
     const snackBarClose = () => {
         setOpen(false);
-        getAllProduct();
         history.push("/");
     };
 

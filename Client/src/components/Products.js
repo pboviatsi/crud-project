@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MaterialTable from 'material-table'
 import axios from "axios";
 import {forwardRef} from 'react';
@@ -64,18 +64,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Product(props) {
     const classes = useStyles();
+    const [products, setProducts] = useState([]);
     const [openModal, setOpenModal] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState();
     const [transition, setTransition] = React.useState(undefined);
-    //παίρνω όλα τα προϊόντα απο το App.js
-    const {getAllProduct, product} = props;
     const history = useHistory();
 
     //άνοιγμα pop-up φόρμας νέου πρϊόντος
     const handleOpen = () => {
         setOpenModal(true);
     };
+
+    //εμφάνιση όλων των προϊόντων
+    function getAllProducts(){
+        axios.get(`/products`)
+            .then((result)=>{
+                setProducts(result.data);
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+    }
 
     //διαγραφή προϊόντος με συγκεκριμένο id
     function deleteProduct(productId){
@@ -175,6 +185,10 @@ export default function Product(props) {
          history.push("/editProduct/"+product_id);
      }
 
+    useEffect(() => {
+        getAllProducts();
+    }, []);
+
     return (
         <React.Fragment>
             <MaterialTable
@@ -194,7 +208,7 @@ export default function Product(props) {
                         onClick: (event, rowData) =>  updateInNewPage(rowData.product_id)
                     }]}
                 columns={columns}
-                data={product}
+                data={products}
                 localization={{
                     body: {
                         deleteTooltip: 'Διαγραφή',
@@ -237,15 +251,15 @@ export default function Product(props) {
                         new Promise((resolve, reject) => {
                             setTimeout(() => {
                                 updateProduct(newData);
-                                getAllProduct();
+                                getAllProducts();
                                 resolve();
                             }, 1000)
                         }),
                     onRowDelete: oldData =>
                         new Promise((resolve, reject) => {
                             setTimeout(() => {
-                                deleteProduct(product[oldData.tableData.id].product_id);
-                                getAllProduct();
+                                deleteProduct(products[oldData.tableData.id].product_id);
+                                getAllProducts();
                                 resolve();
                             }, 1000)
                         }),
@@ -273,7 +287,7 @@ export default function Product(props) {
             <Button className={classes.button} component={Link} to="/newProduct">
                 Προσθηκη νεου προϊοντος σε νεα σελιδα
             </Button>
-            <NewProduct open={openModal} setOpen={setOpenModal} getAllProduct={getAllProduct} product={product}/>
+            <NewProduct open={openModal} setOpen={setOpenModal} getAllProducts={getAllProducts}/>
             <Snackbar
                 open={open}
                 autoHideDuration={3000}

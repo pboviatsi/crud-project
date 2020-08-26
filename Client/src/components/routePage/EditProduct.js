@@ -30,7 +30,6 @@ function EditProduct(props) {
     const [open, setOpen] = React.useState(false);
     const [transition, setTransition] = React.useState(undefined);
     const [snackbarMessage, setSnackbarMessage] = useState();
-    const {getAllProduct, product} = props;
     const history = useHistory();
     let product_id = props.location.pathname.substring(13);
 
@@ -59,7 +58,6 @@ function EditProduct(props) {
     // κλείσιμο snackBar
     const snackBarClose = () => {
         setOpen(false);
-        getAllProduct();
         history.push("/");
     };
 

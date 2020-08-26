@@ -41,7 +41,8 @@ export default function Products(props) {
     const {open, setOpen} = props;
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
-    const {getAllProduct, product} = props;
+    //παίρνω όλα τα προϊόντα απο το Products.js
+    const {getAllProducts} = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -70,7 +71,7 @@ export default function Products(props) {
             .then((result)=>{
                 setOpen(false);
                 handleReset();
-                getAllProduct();
+                getAllProducts();
             })
             .catch((error)=>{
                 alert(error);

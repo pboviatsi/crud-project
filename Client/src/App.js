@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
+import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 import Container from "@material-ui/core/Container/Container";
@@ -13,22 +12,6 @@ import EditProduct from "./components/routePage/EditProduct";
 import NewProduct from "./components/routePage/NewProduct";
 
 function App() {
-    const [products, setProducts] = useState([]);
-
-    //εμφάνιση όλων των προϊόντων
-    const getProducts = () => {
-        axios.get(`/products/`)
-            .then((result)=>{
-                setProducts(result.data);
-            })
-            .catch((error)=>{
-                alert(error);
-            });
-    };
-
-    useEffect(() => {
-       getProducts()
-    }, []);
 
     return(
         <Container maxWidth="xl">
@@ -42,16 +25,10 @@ function App() {
 
             <Router>
                 <Switch>
-                    <Route path="/" exact>
-                        <Products getAllProduct={getProducts} product={products}/>
-                    </Route>
+                    <Route path="/" component={Products} exact/>
                     <Route path="/products/:product_id" component={ProductWithId}/>
-                    <Route path="/editProduct/:product_id">
-                        <EditProduct getAllProduct={getProducts} product={products}/>
-                    </Route>
-                    <Route path="/newProduct">
-                        <NewProduct getAllProduct={getProducts} product={products}/>
-                    </Route>
+                    <Route path="/editProduct/:product_id" component={EditProduct}/>
+                    <Route path="/newProduct" component={NewProduct}/>
                 </Switch>
             </Router>
         </Container>
