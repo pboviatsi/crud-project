@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button';
 import {makeStyles} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import AddIcon from '@material-ui/icons/Add';
-import NewProduct from "./NewProduct";
+import NewProductDialog from "./NewProductDialog";
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 
 const tableIcons = {
@@ -287,7 +287,7 @@ export default function Product(props) {
             <Button className={classes.button} component={Link} to="/newProduct">
                 Προσθηκη νεου προϊοντος σε νεα σελιδα
             </Button>
-            <NewProduct open={openModal} setOpen={setOpenModal} getAllProducts={getAllProducts}/>
+            <NewProductDialog open={openModal} setOpen={setOpenModal} getAllProducts={getAllProducts}/>
             <Snackbar
                 open={open}
                 autoHideDuration={3000}

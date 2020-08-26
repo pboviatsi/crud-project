@@ -34,7 +34,7 @@ function getSteps() {
     return ['Τίτλος - περιγραφή', 'Τιμή - διαθεσιμότητα', 'Περισσότερες πληροφορίες'];
 }
 
-export default function Products(props) {
+export default function NewProductDialog(props) {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
     //παίρνω την εντολή ανοίγματος παραθύρου απο το Products.js
