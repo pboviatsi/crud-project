@@ -77,38 +77,35 @@ export default function Product(props) {
     };
 
     //εμφάνιση όλων των προϊόντων
-    function getAllProducts(){
-        axios.get(`/products`)
-            .then((result)=>{
-                setProducts(result.data);
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+    async function getAllProducts(){
+        try {
+            const result = await axios.get(`/products`);
+            setProducts(result.data);
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //διαγραφή προϊόντος με συγκεκριμένο id
-    function deleteProduct(productId){
-        axios.delete(`/products/${productId}`)
-            .then((result)=>{
-                snackBarOpen();
-                setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+    async function deleteProduct(productId){
+        try {
+            const result = await axios.delete(`/products/${productId}`);
+            snackBarOpen();
+            setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //ενημέρωση προϊόντος
-    function updateProduct(newData){
-        axios.put(`/products/${newData.product_id}`,newData)
-                .then((result)=>{
-                    snackBarOpen();
-                    setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
-                })
-                .catch((error)=>{
-                    alert(error);
-                });
+    async function updateProduct(newData){
+        try {
+            const result = await axios.put(`/products/${newData.product_id}`,newData);
+            snackBarOpen();
+            setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //άνοιγμα snackBar
@@ -193,7 +190,7 @@ export default function Product(props) {
         <React.Fragment>
             <MaterialTable
                 icons={tableIcons}
-                title="Διαχείριση προϊόντων"
+                title="Λίστα προϊόντων"
                 actions={[
                     {
                         icon: AddIcon,

@@ -66,16 +66,15 @@ export default function NewProductDialog(props) {
     }
 
     //προσθήκη νέου προϊόντος
-    function addProduct(){
-        axios.post(`/products`,rows)
-            .then((result)=>{
-                setOpen(false);
-                handleReset();
-                getAllProducts();
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+    async function addProduct(){
+        try {
+            const result = await axios.post(`/products`,rows);
+            setOpen(false);
+            handleReset();
+            getAllProducts();
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //πεδία εισαγωγής ανάλογα το step

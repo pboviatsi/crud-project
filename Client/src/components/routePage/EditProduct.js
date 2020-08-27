@@ -39,15 +39,14 @@ function EditProduct(props) {
     }
 
     //ενημέρωση προϊόντος
-    function updateProduct(newData){
-        axios.put(`/products/${product_id}`,newData)
-            .then((result)=>{
-                snackBarOpen();
-                setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+    async function updateProduct(newData){
+        try {
+            const result = await axios.put(`/products/${product_id}`,newData);
+            snackBarOpen();
+            setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //άνοιγμα snackBar
@@ -62,13 +61,15 @@ function EditProduct(props) {
     };
 
     useEffect(() => {
-        axios.get(`/products/${product_id}`)
-            .then(function (result) {
-                setRows({ ...result.data[0]});
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+        (async () => {
+            try {
+                const result = await axios.get(`/products/${product_id}`)
+                setRows({...result.data[0]});
+            } catch (error) {
+                console.log(error);
+            }
+            ;
+        })();
     }, [product_id]);
 
     return (

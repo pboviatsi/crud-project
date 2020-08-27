@@ -38,15 +38,14 @@ export default function NewProduct(props) {
     }
 
     //προσθήκη νέου προϊόντος
-    function addProduct(){
-        axios.post(`/products`,rows)
-            .then((result)=>{
-                snackBarOpen();
-                setSnackbarMessage('Προστέθηκε ένα προϊόν');
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+    async function addProduct(){
+        try {
+            const result = await axios.post(`/products`,rows)
+            snackBarOpen();
+            setSnackbarMessage('Προστέθηκε ένα προϊόν');
+        }catch (error) {
+            console.log(error);
+        };
     }
 
     //άνοιγμα snackBar

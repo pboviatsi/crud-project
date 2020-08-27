@@ -13,13 +13,14 @@ function ProductWithId(props) {
     let product_id = props.location.pathname.substring(10);
 
     useEffect(() => {
-        axios.get(`/products/${product_id}`)
-            .then(function (result) {
+        (async () => {
+            try {
+                const result = await axios.get(`/products/${product_id}`)
                 setRows({ ...result.data[0]});
-            })
-            .catch((error)=>{
-                alert(error);
-            });
+            }catch (error) {
+                console.error(error);
+            };
+        })();
     }, [product_id]);
 
     return (
