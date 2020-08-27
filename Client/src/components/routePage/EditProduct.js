@@ -41,7 +41,7 @@ function EditProduct(props) {
     //ενημέρωση προϊόντος
     async function updateProduct(newData){
         try {
-            const result = await axios.put(`/products/${product_id}`,newData);
+            await axios.put(`/products/${product_id}`,newData);
             snackBarOpen();
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
         }catch (error) {
@@ -67,8 +67,7 @@ function EditProduct(props) {
                 setRows({...result.data[0]});
             } catch (error) {
                 console.log(error);
-            }
-            ;
+            };
         })();
     }, [product_id]);
 

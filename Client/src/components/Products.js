@@ -89,7 +89,7 @@ export default function Product(props) {
     //διαγραφή προϊόντος με συγκεκριμένο id
     async function deleteProduct(productId){
         try {
-            const result = await axios.delete(`/products/${productId}`);
+            await axios.delete(`/products/${productId}`);
             snackBarOpen();
             setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
         }catch (error) {
@@ -100,7 +100,7 @@ export default function Product(props) {
     //ενημέρωση προϊόντος
     async function updateProduct(newData){
         try {
-            const result = await axios.put(`/products/${newData.product_id}`,newData);
+            await axios.put(`/products/${newData.product_id}`,newData);
             snackBarOpen();
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
         }catch (error) {
@@ -139,7 +139,6 @@ export default function Product(props) {
         {
             title: 'Περιγραφή',
             field: 'descr',
-            hidden: 'true',
             cellStyle: {
                 textAlign: "left"
             },
