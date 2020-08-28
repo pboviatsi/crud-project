@@ -24,6 +24,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import AddIcon from '@material-ui/icons/Add';
 import NewProductDialog from "./NewProductDialog";
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Box from '@material-ui/core/Box';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref} />),
@@ -203,6 +205,17 @@ export default function Product(props) {
                         isFreeAction: false,
                         onClick: (event, rowData) =>  updateInNewPage(rowData.product_id)
                     }]}
+                components={{
+                    OverlayLoading: props => (
+                        <div>
+                            <Box display="flex" justifyContent="center"  p={50} >
+                                <Box>
+                                    <CircularProgress color="secondary" />
+                                </Box>
+                            </Box>
+                        </div>
+                    )
+                }}
                 columns={columns}
                 data={products}
                 localization={{
