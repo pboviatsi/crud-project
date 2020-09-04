@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
-import {Formik} from 'formik';
+import {Formik, useField} from 'formik';
 import * as Yup from 'yup';
 
 import {makeStyles} from "@material-ui/core";
@@ -9,6 +9,7 @@ import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
 import Box from '@material-ui/core/Box';
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import "../../style.css";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -26,6 +27,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+//μήνυμα λάθους-σωστής τιμής
+const TextInputLiveFeedback = ({ label, helpText, ...props }) => {
+    const [field, meta] = useField(props);
+    const [didFocus, setDidFocus] = React.useState(false);
+    const handleFocus = () => setDidFocus(true);
+    const showFeedback = (!!didFocus && field.value.length > 2) || meta.touched;
+
+    return (
+        <div
+            className={`form-control ${
+                showFeedback ? (meta.error ? "invalid" : "valid") : ""
+                }`}
+        >
+            <div className="flex items-center space-between">
+                <label htmlFor={props.id}>{label}</label>{" "}
+                {showFeedback ? (
+                    <div
+                        id={`${props.id}-feedback`}
+                        aria-live="polite"
+                        className="feedback text-sm"
+                    >
+                        {meta.error ? meta.error : "✓"}
+                    </div>
+                ) : null}
+            </div>
+            <TextField
+                {...props}
+                {...field}
+                aria-describedby={`${props.id}-feedback ${props.id}-help`}
+                onFocus={handleFocus}
+            />
+        </div>
+    );
+};
+
 export default function NewProduct(props) {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
@@ -35,7 +71,7 @@ export default function NewProduct(props) {
     const history = useHistory();
 
     //προσθήκη νέου προϊόντος
-    async function addProduct(){
+    async function addProduct(rows){
         try {
             const result = await axios.post(`/products`,rows)
             snackBarOpen();
@@ -61,12 +97,14 @@ export default function NewProduct(props) {
             .min(2, 'Πολύ μικρό όνομα προϊόντος')
             .max(150, 'Πολύ μεγάλο όνομα προϊόντος')
             .required('Απαραίτητο πεδίο.'),
-        price: Yup.number()
+        descr: Yup.string()
             .required('Απαραίτητο πεδίο.'),
-        availability_count: Yup.number()
+        price: Yup.string()
+            .matches(/^(\d+|[\.\d]+)*$/g,'Μη έγκυρη τιμή προϊόντος')
+            .required('Απαραίτητο πεδίο.'),
+        availability_count: Yup.string()
             .required('Απαραίτητο πεδίο.'),
         product_link: Yup.string()
-            .trim()
             .matches(/^(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-]*)?$/g,'Μη έγκυρο url προϊόντος')
             .required('Απαραίτητο πεδίο.'),
     });
@@ -83,8 +121,8 @@ export default function NewProduct(props) {
                 }}
                 validationSchema={ErrorMessagesSchema}
                 onSubmit={values => {
-                    addProduct();
-                    console.log(values);
+                    addProduct(values);
+                    //console.log(values);
                 }}
             >
                 {({
@@ -96,50 +134,40 @@ export default function NewProduct(props) {
                       handleSubmit,
                       isSubmitting,
                   }) => (
-                    <Box p={1} bgcolor="grey.300">
-                        <form onSubmit={handleSubmit} display="flex" justifyContent="center" m={1} p={1} bgcolor="white">
-                            <TextField
+                    <Box className="new-product-form" >
+                        <h1 >Νέο προϊόν</h1>
+                        <form onSubmit={handleSubmit} >
+                            <TextInputLiveFeedback
                                 name="name_product"
                                 id="name_product"
                                 label="Τίτλος Προϊόντος"
                                 fullWidth
                                 placeholder="Παξιμάδια λαδιού με πιπεριά"
+                                type="text"
                                 margin="normal"
-                                onChange={e => {
-                                            const {name, value} = e.target;
-                                            setRows({...rows, [name]: value});
-                                        }}
-                                helperText={errors.name_product && touched.name_product && errors.name_product}
+                                onChange={handleChange}
                             />
-                            <TextField
+                            <TextInputLiveFeedback
                                 name="descr"
                                 id="descr"
                                 label="Περιγραφή Προϊόντος"
-                                multiline
                                 fullWidth
                                 placeholder="Περιέχει: Αλεύρι, λάδι, πιπεριά, σκόρδο"
+                                type="text"
                                 margin="normal"
-                                onChange={e => {
-                                    const {name, value} = e.target;
-                                    setRows({...rows, [name]: value});
-                                }}
-                                helperText={errors.descr && touched.descr && errors.descr}
+                                onChange={handleChange}
                             />
-                            <TextField
+                            <TextInputLiveFeedback
                                 name="price"
                                 id="price"
                                 label="Τιμή προϊόντος"
                                 fullWidth
                                 placeholder="19,99"
-                                type="number"
+                                type="text"
                                 margin="normal"
-                                onChange={e => {
-                                    const {name, value} = e.target;
-                                    setRows({...rows, [name]: value});
-                                }}
-                                helperText={errors.price && touched.price && errors.price}
+                                onChange={handleChange}
                             />
-                            <TextField
+                            <TextInputLiveFeedback
                                 name="availability_count"
                                 id="availability_count"
                                 label="Διαθέσιμη ποσότητα προϊόντος"
@@ -147,24 +175,17 @@ export default function NewProduct(props) {
                                 placeholder="250"
                                 type="number"
                                 margin="normal"
-                                onChange={e => {
-                                    const {name, value} = e.target;
-                                    setRows({...rows, [name]: value});
-                                }}
-                                helperText={errors.availability_count && touched.availability_count && errors.availability_count}
+                                onChange={handleChange}
                             />
-                            <TextField
+                            <TextInputLiveFeedback
                                 name="product_link"
                                 id="product_link"
                                 label="Link Προϊόντος"
                                 fullWidth
                                 placeholder="www.directmarket.gr/product.jsp?orgid=68615&productid=13586"
+                                type="text"
                                 margin="normal"
-                                onChange={e => {
-                                    const {name, value} = e.target;
-                                    setRows({...rows, [name]: value});
-                                }}
-                                helperText={errors.product_link && touched.product_link && errors.product_link}
+                                onChange={handleChange}
                             />
 
                             <Button type="submit" className={classes.button} disabled={isSubmitting}>
