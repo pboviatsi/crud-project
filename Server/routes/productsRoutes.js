@@ -12,6 +12,7 @@ router.get('/', async function (req, res) {
         client.release();
     } catch (e) {
         console.error(e);
+        client.release();
     }
 });
 
@@ -26,6 +27,7 @@ router.get('/:product_id', async function (req, res) {
         client.release();
     } catch (e) {
         console.error(e);
+        client.release();
     }
 });
 
@@ -42,6 +44,7 @@ router.delete('/:product_id', async function (req, res) {
         client.release();
     } catch (e) {
         console.error(e);
+        client.release();
     }
 });
 
@@ -60,6 +63,7 @@ router.post('/', async function (req, res) {
         client.release();
     } catch (e) {
         console.error(e);
+        client.release();
     }
 });
 
@@ -82,6 +86,7 @@ router.put('/:product_id', async (req, res) => {
         client.release();
     } catch (e) {
         console.error(e);
+        client.release();
     }
 });
 
