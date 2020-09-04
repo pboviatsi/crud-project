@@ -47,7 +47,7 @@ router.delete('/:product_id', async function (req, res) {
 
 //προσθήκη νέου προϊόντος
 router.post('/', async function (req, res) {
-    const values = [ req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link ];
+    const values = [req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link];
 
     try {
         const client = await pool.connect();
@@ -55,7 +55,7 @@ router.post('/', async function (req, res) {
             INSERT INTO products (name_product, descr, price, availability_count, product_link)
             VALUES ($1, $2, $3, $4, $5)
             returning *
-        `, values );
+        `, values);
         await res.json(dbRes.rows[0]);
         client.release();
     } catch (e) {
@@ -65,7 +65,7 @@ router.post('/', async function (req, res) {
 
 //ενημέρωση προϊόντος
 router.put('/:product_id', async (req, res) => {
-    const values = [ req.params.product_id, req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link ];
+    const values = [req.params.product_id, req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link];
 
     try {
         const client = await pool.connect();
@@ -77,7 +77,7 @@ router.put('/:product_id', async (req, res) => {
                 availability_count = $5, 
                 product_link = $6
             WHERE product_id = $1
-        `, values );
+        `, values);
         await res.json(dbRes.rows[0]);
         client.release();
     } catch (e) {

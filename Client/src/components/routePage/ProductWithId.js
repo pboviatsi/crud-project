@@ -16,10 +16,11 @@ function ProductWithId(props) {
         (async () => {
             try {
                 const result = await axios.get(`/products/${product_id}`)
-                setRows({ ...result.data[0]});
-            }catch (error) {
+                setRows({...result.data[0]});
+            } catch (error) {
                 console.error(error);
-            };
+            }
+            ;
         })();
     }, [product_id]);
 

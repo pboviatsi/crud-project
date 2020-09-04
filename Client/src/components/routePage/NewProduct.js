@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //μήνυμα λάθους-σωστής τιμής
-const TextInputLiveFeedback = ({ label, helpText, ...props }) => {
+const TextInputLiveFeedback = ({label, helpText, ...props}) => {
     const [field, meta] = useField(props);
     const [didFocus, setDidFocus] = React.useState(false);
     const handleFocus = () => setDidFocus(true);
@@ -71,14 +71,15 @@ export default function NewProduct(props) {
     const history = useHistory();
 
     //προσθήκη νέου προϊόντος
-    async function addProduct(rows){
+    async function addProduct(rows) {
         try {
-            const result = await axios.post(`/products`,rows)
+            const result = await axios.post(`/products`, rows)
             snackBarOpen();
             setSnackbarMessage('Προστέθηκε ένα προϊόν');
-        }catch (error) {
+        } catch (error) {
             console.log(error);
-        };
+        }
+        ;
     }
 
     //άνοιγμα snackBar
@@ -100,12 +101,12 @@ export default function NewProduct(props) {
         descr: Yup.string()
             .required('Απαραίτητο πεδίο.'),
         price: Yup.string()
-            .matches(/^(\d+|[\.\d]+)*$/g,'Μη έγκυρη τιμή προϊόντος')
+            .matches(/^(\d+|[\.\d]+)*$/g, 'Μη έγκυρη τιμή προϊόντος')
             .required('Απαραίτητο πεδίο.'),
         availability_count: Yup.string()
             .required('Απαραίτητο πεδίο.'),
         product_link: Yup.string()
-            .matches(/^(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-]*)?$/g,'Μη έγκυρο url προϊόντος')
+            .matches(/^(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-]*)?$/g, 'Μη έγκυρο url προϊόντος')
             .required('Απαραίτητο πεδίο.'),
     });
 
@@ -134,9 +135,9 @@ export default function NewProduct(props) {
                       handleSubmit,
                       isSubmitting,
                   }) => (
-                    <Box className="new-product-form" >
-                        <h1 >Νέο προϊόν</h1>
-                        <form onSubmit={handleSubmit} >
+                    <Box className="new-product-form">
+                        <h1>Νέο προϊόν</h1>
+                        <form onSubmit={handleSubmit}>
                             <TextInputLiveFeedback
                                 name="name_product"
                                 id="name_product"

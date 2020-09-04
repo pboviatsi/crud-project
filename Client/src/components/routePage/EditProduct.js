@@ -34,19 +34,20 @@ function EditProduct(props) {
     let product_id = props.location.pathname.substring(13);
 
     function handleChange(e) {
-        const { name, value } = e.target;
-        setRows({ ...rows, [name]: value });
+        const {name, value} = e.target;
+        setRows({...rows, [name]: value});
     }
 
     //ενημέρωση προϊόντος
-    async function updateProduct(newData){
+    async function updateProduct(newData) {
         try {
-            await axios.put(`/products/${product_id}`,newData);
+            await axios.put(`/products/${product_id}`, newData);
             snackBarOpen();
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
-        }catch (error) {
+        } catch (error) {
             console.log(error);
-        };
+        }
+        ;
     }
 
     //άνοιγμα snackBar
@@ -67,7 +68,8 @@ function EditProduct(props) {
                 setRows({...result.data[0]});
             } catch (error) {
                 console.log(error);
-            };
+            }
+            ;
         })();
     }, [product_id]);
 
@@ -81,7 +83,7 @@ function EditProduct(props) {
                         required
                         id="standard-helperText"
                         fullWidth
-                        value={rows.name_product ||''}
+                        value={rows.name_product || ''}
                         margin="normal"
                         onChange={handleChange}
                     />
@@ -91,7 +93,7 @@ function EditProduct(props) {
                         label="Περιγραφή Προϊόντος"
                         multiline
                         fullWidth
-                        value={rows.descr ||''}
+                        value={rows.descr || ''}
                         margin="normal"
                         onChange={handleChange}
                     />
@@ -100,7 +102,7 @@ function EditProduct(props) {
                         id="standard-helperText"
                         label="Τιμή προϊόντος"
                         fullWidth
-                        value={rows.price ||''}
+                        value={rows.price || ''}
                         type="number"
                         margin="normal"
                         onChange={handleChange}
@@ -110,7 +112,7 @@ function EditProduct(props) {
                         id="standard-helperText"
                         label="Διαθέσιμη ποσότητα προϊόντος"
                         fullWidth
-                        value={rows.availability_count ||''}
+                        value={rows.availability_count || ''}
                         type="number"
                         margin="normal"
                         onChange={handleChange}
@@ -120,7 +122,7 @@ function EditProduct(props) {
                         label="Link Προϊόντος"
                         id="standard-helperText"
                         fullWidth
-                        value={rows.product_link ||''}
+                        value={rows.product_link || ''}
                         margin="normal"
                         onChange={handleChange}
                     />

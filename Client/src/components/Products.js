@@ -28,24 +28,24 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 
 const tableIcons = {
-    Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
-    EditInNewPage: forwardRef((props, ref) => <ListAltOutlinedIcon {...props} ref={ref} />),
+    Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref}/>),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref}/>),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref}/>),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref}/>),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref}/>),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref}/>),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref}/>),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref}/>),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref}/>),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref}/>),
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref}/>),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>),
+    EditInNewPage: forwardRef((props, ref) => <ListAltOutlinedIcon {...props} ref={ref}/>),
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -79,35 +79,38 @@ export default function Product(props) {
     };
 
     //εμφάνιση όλων των προϊόντων
-    async function getAllProducts(){
+    async function getAllProducts() {
         try {
             const result = await axios.get(`/products`);
             setProducts(result.data);
-        }catch (error) {
+        } catch (error) {
             console.log(error);
-        };
+        }
+        ;
     }
 
     //διαγραφή προϊόντος με συγκεκριμένο id
-    async function deleteProduct(productId){
+    async function deleteProduct(productId) {
         try {
             await axios.delete(`/products/${productId}`);
             snackBarOpen();
             setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
-        }catch (error) {
+        } catch (error) {
             console.log(error);
-        };
+        }
+        ;
     }
 
     //ενημέρωση προϊόντος
-    async function updateProduct(newData){
+    async function updateProduct(newData) {
         try {
-            await axios.put(`/products/${newData.product_id}`,newData);
+            await axios.put(`/products/${newData.product_id}`, newData);
             snackBarOpen();
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
-        }catch (error) {
+        } catch (error) {
             console.log(error);
-        };
+        }
+        ;
     }
 
     //άνοιγμα snackBar
@@ -121,7 +124,8 @@ export default function Product(props) {
     };
 
     const [columns, setColumns] = useState([
-        {   title: 'Κωδικός',
+        {
+            title: 'Κωδικός',
             field: 'product_id',
             editable: 'never',
             headerStyle: {
@@ -148,7 +152,8 @@ export default function Product(props) {
                 textAlign: "center"
             }
         },
-        {   title: 'Τιμή',
+        {
+            title: 'Τιμή',
             field: 'price',
             type: 'numeric',
             cellStyle: {
@@ -158,7 +163,8 @@ export default function Product(props) {
                 textAlign: "center"
             }
         },
-        {   title: 'Διαθεσιμότητα',
+        {
+            title: 'Διαθεσιμότητα',
             field: 'availability_count',
             type: 'numeric',
             cellStyle: {
@@ -168,7 +174,8 @@ export default function Product(props) {
                 textAlign: "center"
             }
         },
-        {   title: 'Url προϊόντος',
+        {
+            title: 'Url προϊόντος',
             field: 'product_link',
             cellStyle: {
                 textAlign: "left"
@@ -179,9 +186,9 @@ export default function Product(props) {
         },
     ]);
 
-     function updateInNewPage(product_id) {
-         history.push("/editProduct/"+product_id);
-     }
+    function updateInNewPage(product_id) {
+        history.push("/editProduct/" + product_id);
+    }
 
     useEffect(() => {
         getAllProducts();
@@ -203,14 +210,14 @@ export default function Product(props) {
                         icon: tableIcons.EditInNewPage,
                         tooltip: 'Επεξεργασία πρϊόντος σε νέα σελίδα',
                         isFreeAction: false,
-                        onClick: (event, rowData) =>  updateInNewPage(rowData.product_id)
+                        onClick: (event, rowData) => updateInNewPage(rowData.product_id)
                     }]}
                 components={{
                     OverlayLoading: props => (
                         <div>
-                            <Box display="flex" justifyContent="center"  p={50} >
+                            <Box display="flex" justifyContent="center" p={50}>
                                 <Box>
-                                    <CircularProgress color="secondary" />
+                                    <CircularProgress color="secondary"/>
                                 </Box>
                             </Box>
                         </div>
