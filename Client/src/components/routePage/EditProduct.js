@@ -62,6 +62,8 @@ function EditProduct(props) {
         history.push("/");
     };
 
+    const handleOnUpdate = (e) => updateProduct(rows);
+
     useEffect(() => {
         (async () => {
             try {
@@ -129,7 +131,7 @@ function EditProduct(props) {
                         onChange={handleChange}
                     />
 
-                    <Button className={classes.button} onClick={(e) => updateProduct(rows)}>
+                    <Button className={classes.button} onClick={handleOnUpdate}>
                         Ενημερωση προϊοντος
                     </Button>
                 </Box>

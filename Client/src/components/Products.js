@@ -197,6 +197,10 @@ export default function Product(props) {
         getAllProducts();
     }, []);
 
+    const handleOnClickAdd = (event) => handleOpen();
+
+    const handleOnClickEdit = (event, rowData) => updateInNewPage(rowData.product_id);
+
     return (
         <React.Fragment>
             <MaterialTable
@@ -207,13 +211,13 @@ export default function Product(props) {
                         icon: AddIcon,
                         tooltip: 'Προσθήκη πρϊόντος',
                         isFreeAction: true,
-                        onClick: (event) => handleOpen()
+                        onClick: handleOnClickAdd
                     },
                     {
                         icon: tableIcons.EditInNewPage,
                         tooltip: 'Επεξεργασία πρϊόντος σε νέα σελίδα',
                         isFreeAction: false,
-                        onClick: (event, rowData) => updateInNewPage(rowData.product_id)
+                        onClick: handleOnClickEdit
                     }]}
                 components={{
                     OverlayLoading: props => (

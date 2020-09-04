@@ -64,7 +64,6 @@ const TextInputLiveFeedback = ({label, helpText, ...props}) => {
 
 export default function NewProduct(props) {
     const classes = useStyles();
-    const [rows, setRows] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [transition, setTransition] = React.useState(undefined);
     const [snackbarMessage, setSnackbarMessage] = useState();
@@ -111,6 +110,11 @@ export default function NewProduct(props) {
             .required('Απαραίτητο πεδίο.'),
     });
 
+    const handleOnSubmit = (values) => {
+        addProduct(values);
+        //console.log(values);
+    };
+
     return (
         <>
             <Formik
@@ -122,10 +126,7 @@ export default function NewProduct(props) {
                     product_link: ''
                 }}
                 validationSchema={ErrorMessagesSchema}
-                onSubmit={values => {
-                    addProduct(values);
-                    //console.log(values);
-                }}
+                onSubmit={handleOnSubmit}
             >
                 {({
                       values,
