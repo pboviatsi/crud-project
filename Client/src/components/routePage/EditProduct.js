@@ -46,6 +46,7 @@ function EditProduct(props) {
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }
@@ -68,6 +69,7 @@ function EditProduct(props) {
                 setRows({...result.data[0]});
             } catch (error) {
                 console.log(error);
+                alert('Server error!');
             }
             ;
         })();
@@ -79,9 +81,9 @@ function EditProduct(props) {
                 <Box p={1} bgcolor="grey.300">
                     <TextField
                         name="name_product"
+                        id="name_product"
                         label="Τίτλος Προϊόντος"
                         required
-                        id="standard-helperText"
                         fullWidth
                         value={rows.name_product || ''}
                         margin="normal"
@@ -89,7 +91,7 @@ function EditProduct(props) {
                     />
                     <TextField
                         name="descr"
-                        id="standard-helperText"
+                        id="descr"
                         label="Περιγραφή Προϊόντος"
                         multiline
                         fullWidth
@@ -99,7 +101,7 @@ function EditProduct(props) {
                     />
                     <TextField
                         name="price"
-                        id="standard-helperText"
+                        id="price"
                         label="Τιμή προϊόντος"
                         fullWidth
                         value={rows.price || ''}
@@ -109,7 +111,7 @@ function EditProduct(props) {
                     />
                     <TextField
                         name="availability_count"
-                        id="standard-helperText"
+                        id="availability_count"
                         label="Διαθέσιμη ποσότητα προϊόντος"
                         fullWidth
                         value={rows.availability_count || ''}
@@ -119,8 +121,8 @@ function EditProduct(props) {
                     />
                     <TextField
                         name="product_link"
+                        id="product_link"
                         label="Link Προϊόντος"
-                        id="standard-helperText"
                         fullWidth
                         value={rows.product_link || ''}
                         margin="normal"

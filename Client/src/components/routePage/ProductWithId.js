@@ -19,6 +19,7 @@ function ProductWithId(props) {
                 setRows({...result.data[0]});
             } catch (error) {
                 console.error(error);
+                alert('Server error!');
             }
             ;
         })();

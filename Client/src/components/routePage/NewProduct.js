@@ -78,6 +78,7 @@ export default function NewProduct(props) {
             setSnackbarMessage('Προστέθηκε ένα προϊόν');
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }

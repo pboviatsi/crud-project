@@ -85,6 +85,7 @@ export default function Product(props) {
             setProducts(result.data);
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }
@@ -97,6 +98,7 @@ export default function Product(props) {
             setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }
@@ -109,6 +111,7 @@ export default function Product(props) {
             setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }

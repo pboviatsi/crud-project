@@ -74,6 +74,7 @@ export default function NewProductDialog(props) {
             getAllProducts();
         } catch (error) {
             console.log(error);
+            alert('Server error!');
         }
         ;
     }
