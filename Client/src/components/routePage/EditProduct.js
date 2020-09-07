@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
 import Box from '@material-ui/core/Box';
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -43,10 +44,11 @@ function EditProduct(props) {
         try {
             await axios.put(`/products/${product_id}`, newData);
             snackBarOpen();
-            setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
+            setSnackbarMessage(<><Alert severity="success">Ενημερώθηκε ένα προϊόν!</Alert></>);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
         }
         ;
     }
@@ -71,7 +73,8 @@ function EditProduct(props) {
                 setRows({...result.data[0]});
             } catch (error) {
                 console.log(error);
-                alert('Server error!');
+                snackBarOpen();
+                setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
             }
             ;
         })();
@@ -141,9 +144,10 @@ function EditProduct(props) {
                 autoHideDuration={1000}
                 onClose={snackBarClose}
                 TransitionComponent={transition}
-                message={snackbarMessage}
                 key={transition ? transition.name : ''}
-            />
+            >
+                {snackbarMessage}
+            </Snackbar>
         </>
     );
 }

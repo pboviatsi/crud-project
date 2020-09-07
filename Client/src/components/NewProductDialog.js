@@ -17,6 +17,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
+import Alert from "@material-ui/lab/Alert/Alert";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,6 +45,9 @@ export default function NewProductDialog(props) {
     const steps = getSteps();
     //παίρνω όλα τα προϊόντα απο το Products.js
     const {getAllProducts} = props;
+    const [openSnackBar, setOpenSnackBar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState();
+    const [transition, setTransition] = React.useState(undefined);
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -60,6 +65,16 @@ export default function NewProductDialog(props) {
         setOpen(false);
     };
 
+    //άνοιγμα snackBar
+    const snackBarOpen = () => {
+        setOpenSnackBar(true);
+    };
+
+    // κλείσιμο snackBar
+    const snackBarClose = () => {
+        setOpenSnackBar(false);
+    };
+
     function handleChange(e) {
         const {name, value} = e.target;
         setRows({...rows, [name]: value});
@@ -72,9 +87,12 @@ export default function NewProductDialog(props) {
             setOpen(false);
             handleReset();
             getAllProducts();
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="success">Προστέθηκε ένα προϊόν!</Alert></>);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
         }
         ;
     }
@@ -158,43 +176,55 @@ export default function NewProductDialog(props) {
     }
 
     return (
-        <Dialog open={open} onClose={handleClose}>
-            <DialogTitle id="form-dialog-title">Νέο προϊόν</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Συμπληρώσε τα στοιχεία του νέου προϊόντος
-                </DialogContentText>
-                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+        <>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle id="form-dialog-title">Νέο προϊόν</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Συμπληρώσε τα στοιχεία του νέου προϊόντος
+                    </DialogContentText>
+                    <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
 
-                <div className={classes.root}>
-                    <Stepper activeStep={activeStep} alternativeLabel>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                    <div>
+                    <div className={classes.root}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
                         <div>
                             <div>
-                                <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
-                                    Προηγουμενο
-                                </Button>
-                                {activeStep === steps.length - 1 ? (
-                                    <Button variant="contained" color="primary" onClick={addProduct}>
-                                        Ολοκληρωση
+                                <div>
+                                    <Button disabled={activeStep === 0} onClick={handleBack}
+                                            className={classes.backButton}>
+                                        Προηγουμενο
                                     </Button>
-                                ) : (
-                                    <Button variant="contained" color="primary" onClick={handleNext}>
-                                        Επομενο
-                                    </Button>
-                                )
-                                }
+                                    {activeStep === steps.length - 1 ? (
+                                        <Button variant="contained" color="primary" onClick={addProduct}>
+                                            Ολοκληρωση
+                                        </Button>
+                                    ) : (
+                                        <Button variant="contained" color="primary" onClick={handleNext}>
+                                            Επομενο
+                                        </Button>
+                                    )
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </DialogContent>
-        </Dialog>
+                </DialogContent>
+            </Dialog>
+            <Snackbar
+                open={openSnackBar}
+                autoHideDuration={1000}
+                onClose={snackBarClose}
+                TransitionComponent={transition}
+                key={transition ? transition.name : ''}
+            >
+                {snackbarMessage}
+            </Snackbar>
+        </>
     );
 }

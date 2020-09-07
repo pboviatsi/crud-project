@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
+
 import {Formik, useField} from 'formik';
 import * as Yup from 'yup';
 
@@ -10,6 +11,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import Box from '@material-ui/core/Box';
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import "../../style.css";
+import Alert from "@material-ui/lab/Alert/Alert";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -74,10 +76,12 @@ export default function NewProduct(props) {
         try {
             const result = await axios.post(`/products`, rows)
             snackBarOpen();
-            setSnackbarMessage('Προστέθηκε ένα προϊόν');
+            setSnackbarMessage(<><Alert severity="success">Προστέθηκε ένα προϊόν!</Alert></>);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
+            ;
         }
         ;
     }
@@ -203,9 +207,10 @@ export default function NewProduct(props) {
                 autoHideDuration={1000}
                 onClose={snackBarClose}
                 TransitionComponent={transition}
-                message={snackbarMessage}
                 key={transition ? transition.name : ''}
-            />
+            >
+                {snackbarMessage}
+            </Snackbar>
         </>
     );
 }

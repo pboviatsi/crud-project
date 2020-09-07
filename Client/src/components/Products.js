@@ -26,6 +26,7 @@ import NewProductDialog from "./NewProductDialog";
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
+import Alert from "@material-ui/lab/Alert/Alert";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddIcon {...props} ref={ref}/>),
@@ -85,7 +86,8 @@ export default function Product(props) {
             setProducts(result.data);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
         }
         ;
     }
@@ -95,10 +97,11 @@ export default function Product(props) {
         try {
             await axios.delete(`/products/${productId}`);
             snackBarOpen();
-            setSnackbarMessage('Έγινε διαγραφή ενός προϊόντος');
+            setSnackbarMessage(<><Alert severity="success">Έγινε διαγραφή ενός προϊόντος!</Alert></>);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
         }
         ;
     }
@@ -108,10 +111,11 @@ export default function Product(props) {
         try {
             await axios.put(`/products/${newData.product_id}`, newData);
             snackBarOpen();
-            setSnackbarMessage('Ενημερώθηκε ένα προϊόν');
+            setSnackbarMessage(<><Alert severity="success">Ενημερώθηκε ένα προϊόν!</Alert></>);
         } catch (error) {
             console.log(error);
-            alert('Server error!');
+            snackBarOpen();
+            setSnackbarMessage(<><Alert severity="error">Server error!</Alert></>);
         }
         ;
     }
@@ -313,12 +317,13 @@ export default function Product(props) {
             <NewProductDialog open={openModal} setOpen={setOpenModal} getAllProducts={getAllProducts}/>
             <Snackbar
                 open={open}
-                autoHideDuration={3000}
+                autoHideDuration={1000}
                 onClose={snackBarClose}
                 TransitionComponent={transition}
-                message={snackbarMessage}
                 key={transition ? transition.name : ''}
-            />
+            >
+                {snackbarMessage}
+            </Snackbar>
         </React.Fragment>
     )
 }
