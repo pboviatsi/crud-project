@@ -12,10 +12,15 @@ app.use(cors());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
-// ορισμός static φακέλου
-app.use(express.static(path.join(__dirname, 'views')));
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname, '../Client/build')));
+}
+app.use(express.static(path.join(__dirname, "../Client/build")));
 
 app.use(express.json());
+app.get('*',async (req,res)=>{
+    res.sendFile(path.join(__dirname, "../Client/build/index.html"));
+})
 
 // routes των προϊόντων
 app.use('/products', indexRouter);
