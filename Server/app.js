@@ -1,7 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var cors = require('cors');
 var app = express();
 var port = process.env.port || 3000;
@@ -9,11 +8,10 @@ var port = process.env.port || 3000;
 var indexRouter = require('./routes/productsRoutes');
 
 app.use(cors());
-app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
+app.options('*', cors());
 
 if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname, 'Client/build')));
+    app.use(express.static(path.join(__dirname, '../Client/build')));
 }
 app.use(express.static(path.join(__dirname, "../Client/build")));
 
@@ -23,7 +21,7 @@ app.use(express.json());
 app.use('/products', indexRouter);
 
 app.get('*',async (req,res)=>{
-    res.sendFile(path.join(__dirname, "Client/build/index.html"));
+    res.sendFile(path.join(__dirname, "../Client/build/index.html"));
 })
 // 404 και error handler
 app.use(function (req, res, next) {

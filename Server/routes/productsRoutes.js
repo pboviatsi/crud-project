@@ -1,50 +1,51 @@
 //όλα τα queries για το CRUD του project
 const express = require('express');
 const router = express.Router();
-var pool = require('../dbConfig');
+const client = require('../dbConfig').pool;
 
+client.connect();
 //εμφάνιση όλων των προϊόντων
 router.get('/', async function (req, res) {
     try {
-        const client = await pool.connect();
+        //const client = await pool.connect();
         let dbRes = await client.query(`SELECT * FROM products ORDER BY product_id ASC`);
         await res.json(dbRes.rows);
-        client.release();
+        //client.release();
     } catch (e) {
         console.error(e);
-        client.release();
+        //client.release();
     }
 });
 
 //εμφάνιση προϊόντος με συγκεκριμένο id
 router.get('/:product_id', async function (req, res) {
     try {
-        const client = await pool.connect();
+        //const client = await pool.connect();
         let dbRes = await client.query(`
               SELECT * FROM products WHERE product_id = $1
             `, [req.params.product_id]);
         await res.json(dbRes.rows);
-        client.release();
+        //client.release();
     } catch (e) {
         console.error(e);
-        client.release();
+        //client.release();
     }
 });
 
 //διαγραφή προϊόντος με συγκεκριμένο id
 router.delete('/:product_id', async function (req, res) {
     try {
-        const client = await pool.connect();
+        //const client = await pool.connect();
         let dbRes = await client.query(`
             DELETE
             FROM products
             WHERE products.product_id = $1
         `, [req.params.product_id]);
         await res.json({});
-        client.release();
+        //client.release();
     } catch (e) {
         console.error(e);
-        client.release();
+        //client.release();
     }
 });
 
@@ -53,17 +54,17 @@ router.post('/', async function (req, res) {
     const values = [req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link];
 
     try {
-        const client = await pool.connect();
+        //const client = await pool.connect();
         let dbRes = await client.query(`
             INSERT INTO products (name_product, descr, price, availability_count, product_link)
             VALUES ($1, $2, $3, $4, $5)
             returning *
         `, values);
         await res.json(dbRes.rows[0]);
-        client.release();
+        //client.release();
     } catch (e) {
         console.error(e);
-        client.release();
+        //client.release();
     }
 });
 
@@ -72,7 +73,7 @@ router.put('/:product_id', async (req, res) => {
     const values = [req.params.product_id, req.body.name_product, req.body.descr, req.body.price, req.body.availability_count, req.body.product_link];
 
     try {
-        const client = await pool.connect();
+        //const client = await pool.connect();
         let dbRes = await client.query(`
             UPDATE products
             SET name_product = $2, 
@@ -83,10 +84,10 @@ router.put('/:product_id', async (req, res) => {
             WHERE product_id = $1
         `, values);
         await res.json(dbRes.rows[0]);
-        client.release();
+        //client.release();
     } catch (e) {
         console.error(e);
-        client.release();
+        //client.release();
     }
 });
 
