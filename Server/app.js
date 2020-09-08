@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cors = require('cors');
 var app = express();
-var port = process.env.port || 3000;
 
 var indexRouter = require('./routes/productsRoutes');
 
@@ -37,6 +36,4 @@ app.use(function (err, req, res, next) {
     res.json({error: err});
 });
 
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`)
-});
+module.exports = app;

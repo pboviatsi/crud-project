@@ -8,7 +8,7 @@
     "npm": "6.14.2"
   },
   "scripts": {
-    "start": "cd Server && npm install && node app",
+    "start": "cd Server && npm install && node api",
     "heroku-postbuild": "cd Client && npm install --only=dev && npm install && npm run build"
   }
 }
