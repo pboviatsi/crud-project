@@ -13,18 +13,18 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
 if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname, '../Client/build')));
+    app.use(express.static(path.join(__dirname, 'Client/build')));
 }
 app.use(express.static(path.join(__dirname, "../Client/build")));
 
 app.use(express.json());
-app.get('*',async (req,res)=>{
-    res.sendFile(path.join(__dirname, "../Client/build/index.html"));
-})
 
 // routes των προϊόντων
 app.use('/products', indexRouter);
 
+app.get('*',async (req,res)=>{
+    res.sendFile(path.join(__dirname, "Client/build/index.html"));
+})
 // 404 και error handler
 app.use(function (req, res, next) {
     next(createError(404));
