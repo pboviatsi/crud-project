@@ -1,10 +1,6 @@
 {
   "name": "server",
   "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node app"
-  },
   "dependencies": {
     "clean-css": "^4.1.11",
     "constantinople": "^3.1.1",
